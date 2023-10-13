@@ -1,0 +1,15 @@
+{
+  "name": "owaguess",
+  "version": "1.0.0",
+  "description": "Guess game for stream",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Owaguess"
+  },
+  "author": "HJ",
+  "license": "ISC"
+}
