@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Image</title>
+    <style>
+        body {
+            background-color: transparent;
+        }
+        img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <img id="randomImage" src="">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io.connect();
+
+        socket.on('newImage', (imagePath) => {
+            document.getElementById('randomImage').src = imagePath;
+        });
+    </script>
+</body>
+</html>
