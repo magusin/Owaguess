@@ -6,10 +6,11 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const names = ['Malenia', 'Radahn'];
+const names = ['Malenia', 'Radahn', 'Margit'];
 const images = {
-    Malenia: ['malenia.jpg', 'malenia2.png'],
-    Radahn: ['radahn.jpg', 'radahn2.png']
+    Malenia: ['malenia.png', 'malenia2.png'],
+    Radahn: ['radahn.png', 'radahn2.png'],
+    Margit: ['margit.png']
 };
 
 setInterval(() => {
@@ -17,7 +18,7 @@ setInterval(() => {
     const randomImage = images[randomName][Math.floor(Math.random() * images[randomName].length)];
 
     io.emit('newImage', randomImage);
-}, 10000); 
+}, 20000); 
 
 app.use(express.static('public'));
 

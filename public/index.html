@@ -1,27 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Image</title>
     <style>
-        body {
-            background-color: transparent;
+        #randomImage {
+            position: absolute;
+            display: none;
         }
-        img {
-            max-width: 100%;
+
+        body {
+            position: relative;
+            background-color: transparent;
         }
     </style>
 </head>
+
 <body>
     <img id="randomImage" src="">
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io.connect();
+        const imageElement = document.getElementById('randomImage');
 
         socket.on('newImage', (imagePath) => {
-            document.getElementById('randomImage').src = imagePath;
+            imageElement.src = imagePath;
+            imageElement.onload = function () {
+                // Soustrayez les dimensions de l'image pour garantir qu'elle ne dépasse pas
+                const randomTop = Math.random() * (window.innerHeight - imageElement.naturalHeight) + "px";
+                const randomLeft = Math.random() * (window.innerWidth - imageElement.naturalWidth) + "px";
+
+                imageElement.style.top = randomTop;
+                imageElement.style.left = randomLeft;
+                imageElement.style.display = 'block';
+
+                // Cachez l'image après 5 secondes
+                setTimeout(() => {
+                    imageElement.src = '';
+                    imageElement.style.display = 'none';
+                }, 10000);
+            };
         });
     </script>
 </body>
+
 </html>
