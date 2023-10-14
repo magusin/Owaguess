@@ -25,6 +25,7 @@ const images = {
 
 let correctAnswer = null;
 let timer = null;
+const imageUrl = 'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74-defa-11e9-809c-784f43822e80-profile_image-300x300.png';
 
 setInterval(() => {
     const randomName = names[Math.floor(Math.random() * names.length)];
@@ -39,9 +40,9 @@ setInterval(() => {
         correctAnswer = null;
         timer = null;
     }, 10000);
-}, 20000); 
-
-const options = {
+  }, 20000); 
+  
+  const options = {
     options: {
       debug: false
     },
@@ -57,7 +58,6 @@ const options = {
   }
 
 const client = tmi.Client(options);
-
 client.connect();
 
 client.on('chat', (channel, userstate, message, self) => {
@@ -68,6 +68,11 @@ client.on('chat', (channel, userstate, message, self) => {
        timer = null;
        correctAnswer = null;
        client.say(channel, `@${username} has guessed the correct answer!`);
+       try {
+        updateEnxtensionGuesses(userId, username)
+       } catch (err) {
+        console.log(err);
+       } 
     }
   
 });
@@ -78,3 +83,20 @@ const PORT = 3000;
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+async function updateEnxtensionGuesses(userId, username) {
+ return new Promise((resolve, reject) => {
+  let sql = `
+  INSERT INTO pets (userId, name, imageUrl, xp, level, subs, gifts, messages, bits, guess, quiz)
+  VALUES (?, ?, ?, 1, 1, 0, 0, 0, 0, 1, 0)
+  ON DUPLICATE KEY UPDATE guess = guess + 1, xp = xp + VALUES(xp)
+  `;
+  db.query(sql, [userId, username, imageUrl], (err, result) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(result);
+    }
+  }); 
+});
+}
