@@ -5,7 +5,16 @@ const tmi = require('tmi.js');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+const mysql = require('mysql2');
+require('dotenv').config();
 
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT
+})
 
 const names = ['Malenia', 'Radahn', 'Margit'];
 const images = {
@@ -14,11 +23,22 @@ const images = {
     Margit: ['margit.png']
 };
 
+let correctAnswer = null;
+let timer = null;
+
 setInterval(() => {
     const randomName = names[Math.floor(Math.random() * names.length)];
     const randomImage = images[randomName][Math.floor(Math.random() * images[randomName].length)];
 
     io.emit('newImage', randomImage);
+    correctAnswer = randomName;
+    console.log(correctAnswer);
+
+    timer = setTimeout(() => {
+        io.emit('newImage', 'timeout.png');
+        correctAnswer = null;
+        timer = null;
+    }, 10000);
 }, 20000); 
 
 const options = {
@@ -39,6 +59,18 @@ const options = {
 const client = tmi.Client(options);
 
 client.connect();
+
+client.on('chat', (channel, userstate, message, self) => {
+  const username = userstate['display-name'];
+  const userId = userstate['user-id'];
+    if (timer != null && (message.toLowerCase() === correctAnswer.toLowerCase() || message === correctAnswer)) {
+      console.log('Correct answer! ' + username);
+       timer = null;
+       correctAnswer = null;
+       client.say(channel, `@${username} has guessed the correct answer!`);
+    }
+  
+});
 
 app.use(express.static('public'));
 
