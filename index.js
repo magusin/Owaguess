@@ -1,10 +1,11 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-
+const tmi = require('tmi.js');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
 
 const names = ['Malenia', 'Radahn', 'Margit'];
 const images = {
@@ -19,6 +20,25 @@ setInterval(() => {
 
     io.emit('newImage', randomImage);
 }, 20000); 
+
+const options = {
+    options: {
+      debug: false
+    },
+    connection: {
+      reconnect: true,
+      secure: true
+    },
+    identity: {
+      username: process.env.TMI_USERNAME,
+      password: process.env.TMI_PASSWORD
+    },
+    channels: ['fanatsy68']
+  }
+
+const client = tmi.Client(options);
+
+client.connect();
 
 app.use(express.static('public'));
 
