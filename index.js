@@ -16,11 +16,12 @@ const db = mysql.createConnection({
   port: process.env.DB_PORT
 })
 
-const names = ['Malenia', 'Radahn', 'Margit'];
+const names = ['Malenia', 'Radahn', 'Loup', 'Hoarah'];
 const images = {
-  Malenia: ['malenia.png', 'malenia2.png'],
-  Radahn: ['radahn.png', 'radahn2.png'],
-  Margit: ['margit.png']
+  Malenia: ['malenia.png'],
+  Radahn: ['radahn.png'],
+  Hoarah: ['margit.png'],
+  Loup: ['loup.png']
 };
 
 let correctAnswer = null;
@@ -50,7 +51,7 @@ client.connect();
 client.on('chat', (channel, userstate, message, self) => {
   const username = userstate['display-name'];
   const userId = userstate['user-id'];
-  if (timer != null && (message.toLowerCase() === correctAnswer.toLowerCase() || message === correctAnswer)) {
+  if (timer != null && message.toLowerCase().includes(correctAnswer.toLowerCase())) {
     console.log('Correct answer! ' + username);
     timer = null;
     correctAnswer = null;
@@ -89,7 +90,7 @@ async function updateExtensionGuesses(userId, username) {
 }
 
 function showImage() {
-  const delay = Math.floor(Math.random() * (1740000 - 900000 + 1)) + 900000;
+  const delay = Math.floor(Math.random() * (17400 - 9000 + 1)) + 9000;
 
   setTimeout(() => {
     const randomName = names[Math.floor(Math.random() * names.length)];
