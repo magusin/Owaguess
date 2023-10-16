@@ -16,12 +16,17 @@ const db = mysql.createConnection({
   port: process.env.DB_PORT
 })
 
-const names = ['Malenia', 'Radahn', 'Loup', 'Hoarah'];
-const images = {
-  Malenia: ['malenia.png'],
-  Radahn: ['radahn.png'],
-  Hoarah: ['margit.png'],
-  Loup: ['loup.png']
+// const names = ['Malenia', 'Radahn', 'Loup', 'Hoarah'];
+// const images = {
+//   Malenia: ['malenia.png'],
+//   Radahn: ['radahn.png'],
+//   Hoarah: ['hoarah.png'],
+//   Loup: ['loup.png']
+// };
+const names = ['Fortissax'];
+const media = {
+  Fortissax: ['fortissax.mp4'],
+  Malenia: ['malenia.png']
 };
 
 let correctAnswer = null;
@@ -90,20 +95,20 @@ async function updateExtensionGuesses(userId, username) {
 }
 
 function showImage() {
-  const delay = Math.floor(Math.random() * (17400 - 9000 + 1)) + 9000;
-
+  // const delay = Math.floor(Math.random() * (1740000 - 900000 + 1)) + 900000;
+  const delay = 20000;
   setTimeout(() => {
     const randomName = names[Math.floor(Math.random() * names.length)];
-    const randomImage = images[randomName][Math.floor(Math.random() * images[randomName].length)];
+    const randomMedia = media[randomName][Math.floor(Math.random() * media[randomName].length)];
 
-    io.emit('newImage', randomImage);
+    io.emit('newMedia', randomMedia);
     correctAnswer = randomName;
     console.log(correctAnswer);
 
     timer = setTimeout(() => {
       correctAnswer = null;
       timer = null;
-    }, 5 * 60 * 1000);
+    }, 15000); //5 * 60 * 1000
 
     showImage();
   }, delay);

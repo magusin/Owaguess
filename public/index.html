@@ -11,6 +11,12 @@
             display: none;
         }
 
+        #randomVideo {
+            position: absolute;
+            display: none;
+            object-fit: cover;
+        }
+
         body {
             position: relative;
             background-color: transparent;
@@ -20,29 +26,73 @@
 
 <body>
     <img id="randomImage" src="">
+    <video id="randomVideo" width="160" height="320" controls>
+        <source src="" type="video/mp4">
+    </video>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io.connect();
         const imageElement = document.getElementById('randomImage');
+        const videoElement = document.getElementById('randomVideo');
+        const videoSourceElement = videoElement.getElementsByTagName('source')[0];
+        socket.on('newMedia', (mediaPath) => {
+            const isVideo = mediaPath.endsWith('.mp4');
+    let elementToShow;
 
-        socket.on('newImage', (imagePath) => {
-            imageElement.src = imagePath;
-            imageElement.onload = function () {
-                // Soustrayez les dimensions de l'image pour garantir qu'elle ne dépasse pas
-                const randomTop = Math.random() * (window.innerHeight - imageElement.naturalHeight) + "px";
-                const randomLeft = Math.random() * (window.innerWidth - imageElement.naturalWidth) + "px";
+    if (isVideo) {
+        elementToShow = videoElement;
+        videoSourceElement.src = mediaPath;
+        videoElement.src = mediaPath;
+        videoElement.load();
+        videoElement.muted = true;
+        videoElement.currentTime = 0;
+        videoElement.play();
 
-                imageElement.style.top = randomTop;
-                imageElement.style.left = randomLeft;
-                imageElement.style.display = 'block';
+        videoElement.oncanplay = function () {
+            handleMediaDisplay(elementToShow);
+            // Pour éviter que l'événement soit déclenché plusieurs fois
+            videoElement.oncanplay = null; 
+        };
+    } else {
+        elementToShow = imageElement;
+        imageElement.src = mediaPath;
+        imageElement.onload = function() {
+            handleMediaDisplay(elementToShow);
+            videoElement.oncanplaythrough = null;
+        };
+    }
+});
 
-                // Cachez l'image après 5 secondes
-                setTimeout(() => {
-                    imageElement.src = '';
-                    imageElement.style.display = 'none';
-                }, 10000);
-            };
-        });
+function handleMediaDisplay(elementToShow) {
+
+    let elementHeight, elementWidth;
+    
+    if (elementToShow.tagName === 'VIDEO') {
+        elementHeight = videoElement.height;
+        elementWidth = videoElement.width;
+    } else { // Assuming it's an image
+        elementHeight = elementToShow.naturalHeight;
+        elementWidth = elementToShow.naturalWidth;
+    }
+
+    const randomTop = Math.random() * (window.innerHeight - elementHeight) + "px";
+    const randomLeft = Math.random() * (window.innerWidth - elementWidth) + "px";
+
+
+    elementToShow.style.top = randomTop;
+    elementToShow.style.left = randomLeft;
+    elementToShow.style.display = 'block';
+
+    // Cachez le média après 10 secondes
+    setTimeout(() => {
+        if (elementToShow.tagName === 'VIDEO') {
+            elementToShow.pause();
+            elementToShow.currentTime = 0;
+        }
+        elementToShow.src = '';
+        elementToShow.style.display = 'none';
+    }, 10000);
+}
     </script>
 </body>
 
