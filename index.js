@@ -98,11 +98,10 @@ client.on('chat', (channel, userstate, message, self) => {
         if (err) {
           console.log(err);
         } else {
-          let topGuess = '';
+          client.say(channel, `Top guessers:`);
           for (let i = 0; i < result.length; i++) {
-            topGuess += `${i + 1}. ${result[i].name} - ${result[i].guess} guesses `;
+            client.say(channel, `${i+1}${i + 1 === 1 ? 'er' : 'ème'}. ${result[i].name} : ${result[i].guess} guesses`);
           }
-          client.say(channel, `Top guessers: ${topGuess}`);
         }
       });
     } catch (err) {
