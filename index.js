@@ -76,7 +76,39 @@ client.on('chat', (channel, userstate, message, self) => {
       console.log(err);
     }
   }
-
+  if (message === '!myguess') { 
+    try {
+      db.query('SELECT guess FROM pets WHERE userId = ?', [userId], (err, result) => {
+        if (err) {
+          console.log(err);
+        } if (result.length === 0) {
+          client.say(channel, `@${username} has not guessed yet!`);
+        }   
+        else {
+          client.say(channel, `@${username} has guessed ${result[0].guess} times!`);
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  if (message === '!topguess') {
+    try {
+      db.query('SELECT name, guess FROM pets ORDER BY guess DESC LIMIT 5', (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          let topGuess = '';
+          for (let i = 0; i < result.length; i++) {
+            topGuess += `${i + 1}. ${result[i].name} - ${result[i].guess} guesses `;
+          }
+          client.say(channel, `Top guessers: ${topGuess}`);
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
 });
 
 app.use(express.static('public'));
@@ -105,7 +137,7 @@ async function updateExtensionGuesses(userId, username) {
 
 function showImage() {
   // const delay = Math.floor(Math.random() * (1740000 - 900000 + 1)) + 900000;
-  const delay = 20000;
+  const delay = 60000;
   setTimeout(() => {
     const randomName = names[Math.floor(Math.random() * names.length)];
     const randomMedia = media[randomName][Math.floor(Math.random() * media[randomName].length)];
@@ -117,7 +149,7 @@ function showImage() {
     timer = setTimeout(() => {
       correctAnswer = null;
       timer = null;
-    }, 15000); //5 * 60 * 1000
+    }, 45000); //5 * 60 * 1000
 
     showImage();
   }, delay);
