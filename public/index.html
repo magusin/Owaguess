@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- fortissax 
+    maliketh
+    géant  
 
+-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +30,7 @@
 
 <body>
     <img id="randomImage" src="">
-    <video id="randomVideo" width="160" height="320" controls>
+    <video id="randomVideo" width="200" height="400" controls>
         <source src="" type="video/mp4">
     </video>
     <script src="/socket.io/socket.io.js"></script>
@@ -41,8 +45,8 @@
 
     if (isVideo) {
         elementToShow = videoElement;
-        videoSourceElement.src = mediaPath;
-        videoElement.src = mediaPath;
+        videoSourceElement.src = `/assets/${mediaPath}`;
+        videoElement.src = `/assets/${mediaPath}`;
         videoElement.load();
         videoElement.muted = true;
         videoElement.currentTime = 0;
@@ -55,7 +59,7 @@
         };
     } else {
         elementToShow = imageElement;
-        imageElement.src = mediaPath;
+        imageElement.src = `/assets/${mediaPath}`;
         imageElement.onload = function() {
             handleMediaDisplay(elementToShow);
             videoElement.oncanplaythrough = null;

@@ -23,10 +23,19 @@ const db = mysql.createConnection({
 //   Hoarah: ['hoarah.png'],
 //   Loup: ['loup.png']
 // };
-const names = ['Fortissax'];
+const names = ['Fortissax', 'Loup', 'Maliketh', 'Placidusax', 'Godfrey', 'Géant', 'O\'neil', 'Malenia', 'Rennala', 'Mohg', 'Radahn'];
 const media = {
   Fortissax: ['fortissax.mp4'],
-  Malenia: ['malenia.png']
+  Malenia: ['malenia.png', 'malenia.mp4'],
+  Loup: ['loup.mp4'],
+  Maliketh: ['maliketh.mp4'],
+  Placidusax: ['placidusax.mp4'],
+  Godfrey: ['godfrey.mp4'],
+  Géant: ['géant.mp4'],
+  "O'neil": ['o\'neil.mp4'],
+  Rennala: ['rennala.mp4'],
+  Mohg: ['mohg.mp4'],
+  Radahn: ['radahn.mp4']
 };
 
 let correctAnswer = null;
